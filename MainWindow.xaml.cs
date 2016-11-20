@@ -53,6 +53,8 @@ namespace PolarisBiosEditor
         ATOM_VRAM_ENTRY[] atom_vram_entries;
         ATOM_VRAM_TIMING_ENTRY[] atom_vram_timing_entries;
         int atom_vram_index = 0;
+        const int MAX_VRAM_ENTRIES = 24;
+        int atom_vram_timing_offset;
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         unsafe struct ATOM_COMMON_TABLE_HEADER
@@ -414,8 +416,8 @@ namespace PolarisBiosEditor
                 tableVRAM_TIMING.Items.Clear();
 
                 System.IO.Stream fileStream = openFileDialog.OpenFile();
-                if (fileStream.Length < 524288) {
-                    MessageBox.Show("This BIOS is less than the standard 512KB size.\nFlashing this BIOS may corrupt your graphics card.", "WARNING", MessageBoxButton.OK, MessageBoxImage.Warning);
+                if ((fileStream.Length != 524288) && (fileStream.Length != 524288/2)) {
+                    MessageBox.Show("This BIOS is non standard size.\nFlashing this BIOS may corrupt your graphics card.", "WARNING", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 using (BinaryReader br = new BinaryReader(fileStream)) {
                     buffer = br.ReadBytes((int)fileStream.Length);
@@ -469,9 +471,12 @@ namespace PolarisBiosEditor
                             atom_vram_entries[i] = fromBytes<ATOM_VRAM_ENTRY>(buffer.Skip(atom_vram_entry_offset).ToArray());
                             atom_vram_entry_offset += atom_vram_entries[i].usModuleSize;
                         }
-                        atom_vram_timing_entries = new ATOM_VRAM_TIMING_ENTRY[24];
-                        for (var i = 0; i < 24; i++) {
-                            atom_vram_timing_entries[i] = fromBytes<ATOM_VRAM_TIMING_ENTRY>(buffer.Skip(atom_vram_entry_offset + 0xC0 + Marshal.SizeOf(typeof(ATOM_VRAM_TIMING_ENTRY))*i).ToArray());
+
+                        atom_vram_timing_offset = atom_vram_info_offset + atom_vram_info.usMemClkPatchTblOffset + 0x2E;
+                        atom_vram_timing_entries = new ATOM_VRAM_TIMING_ENTRY[MAX_VRAM_ENTRIES];
+                        for (var i = 0; i < MAX_VRAM_ENTRIES; i++)
+                        {
+                            atom_vram_timing_entries[i] = fromBytes<ATOM_VRAM_TIMING_ENTRY>(buffer.Skip(atom_vram_timing_offset + Marshal.SizeOf(typeof(ATOM_VRAM_TIMING_ENTRY)) * i).ToArray());
 
                             // atom_vram_timing_entries have an undetermined length
                             // attempt to determine the last entry in the array
@@ -611,15 +616,17 @@ namespace PolarisBiosEditor
 
                         listVRAM.Items.Clear();
                         for (var i = 0; i < atom_vram_info.ucNumOfVRAMModule; i++) {
-                            listVRAM.Items.Add(Encoding.UTF8.GetString(atom_vram_entries[i].strMemPNString));
+                            if (atom_vram_entries[i].strMemPNString[0] != 0)
+                                listVRAM.Items.Add(Encoding.UTF8.GetString(atom_vram_entries[i].strMemPNString).Substring(0, 10));
                         }
                         listVRAM.SelectedIndex = 0;
                         atom_vram_index = listVRAM.SelectedIndex;
 
                         tableVRAM_TIMING.Items.Clear();
                         for (var i = 0; i < atom_vram_timing_entries.Length; i++) {
+                            uint tbl = atom_vram_timing_entries[i].ulClkRange >> 24;
                             tableVRAM_TIMING.Items.Add(new {
-                                MHZ = (atom_vram_timing_entries[i].ulClkRange & 0x00FFFFFF) / 100,
+                                MHZ = tbl.ToString() + ":" + (atom_vram_timing_entries[i].ulClkRange & 0x00FFFFFF) / 100,
                                 VALUE = ByteArrayToString(atom_vram_timing_entries[i].ucLatency)
                             });
                         }
@@ -855,8 +862,10 @@ namespace PolarisBiosEditor
                     setBytesAtPosition(buffer, atom_vram_entry_offset, getBytes(atom_vram_entries[i]));
                     atom_vram_entry_offset += atom_vram_entries[i].usModuleSize;
                 }
+                
+                atom_vram_timing_offset = atom_vram_info_offset + atom_vram_info.usMemClkPatchTblOffset + 0x2E;
                 for (var i = 0; i < atom_vram_timing_entries.Length; i++) {
-                    setBytesAtPosition(buffer, atom_vram_entry_offset + 0xC0 + Marshal.SizeOf(typeof(ATOM_VRAM_TIMING_ENTRY))*i, getBytes(atom_vram_timing_entries[i]));
+                    setBytesAtPosition(buffer, atom_vram_timing_offset + Marshal.SizeOf(typeof(ATOM_VRAM_TIMING_ENTRY)) * i, getBytes(atom_vram_timing_entries[i]));
                 }
 
                 fixChecksum(true);
