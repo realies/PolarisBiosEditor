@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -8,6 +7,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Linq;
+using System.ComponentModel;
 
 namespace PolarisBiosEditor
 {
@@ -56,7 +56,7 @@ namespace PolarisBiosEditor
         int atom_vram_timing_offset;
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_COMMON_TABLE_HEADER
+        struct ATOM_COMMON_TABLE_HEADER
         {
             Int16 usStructureSize;
             Byte ucTableFormatRevision;
@@ -64,7 +64,7 @@ namespace PolarisBiosEditor
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_ROM_HEADER
+        struct ATOM_ROM_HEADER
         {
             public ATOM_COMMON_TABLE_HEADER sHeader;
             public UInt32 uaFirmWareSignature;
@@ -89,7 +89,7 @@ namespace PolarisBiosEditor
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_DATA_TABLES
+        struct ATOM_DATA_TABLES
         {
             public ATOM_COMMON_TABLE_HEADER sHeader;
             public UInt16 UtilityPipeLine;
@@ -163,7 +163,7 @@ namespace PolarisBiosEditor
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_MCLK_ENTRY
+        struct ATOM_MCLK_ENTRY
         {
             public Byte ucVddcInd;
             public UInt16 usVddci;
@@ -174,7 +174,7 @@ namespace PolarisBiosEditor
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_MCLK_TABLE
+        struct ATOM_MCLK_TABLE
         {
             public Byte ucRevId;
             public Byte ucNumEntries;
@@ -182,7 +182,7 @@ namespace PolarisBiosEditor
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_SCLK_ENTRY
+        struct ATOM_SCLK_ENTRY
         {
             public Byte ucVddInd;
             public UInt16 usVddcOffset;
@@ -194,7 +194,7 @@ namespace PolarisBiosEditor
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_SCLK_TABLE
+        struct ATOM_SCLK_TABLE
         {
             public Byte ucRevId;
             public Byte ucNumEntries;
@@ -202,7 +202,7 @@ namespace PolarisBiosEditor
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_VOLTAGE_ENTRY
+        struct ATOM_VOLTAGE_ENTRY
         {
             public UInt16 usVdd;
             public UInt16 usCACLow;
@@ -211,7 +211,7 @@ namespace PolarisBiosEditor
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_VOLTAGE_TABLE
+        struct ATOM_VOLTAGE_TABLE
         {
             public Byte ucRevId;
             public Byte ucNumEntries;
@@ -219,7 +219,7 @@ namespace PolarisBiosEditor
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_FAN_TABLE
+        struct ATOM_FAN_TABLE
         {
             public Byte ucRevId;
             public Byte ucTHyst;
@@ -248,7 +248,7 @@ namespace PolarisBiosEditor
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_POWERTUNE_TABLE
+        struct ATOM_POWERTUNE_TABLE
         {
             public Byte ucRevId;
             public UInt16 usTDP;
@@ -281,7 +281,7 @@ namespace PolarisBiosEditor
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_VRAM_TIMING_ENTRY
+        struct ATOM_VRAM_TIMING_ENTRY
         {
             public UInt32 ulClkRange;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 0x30)]
@@ -289,7 +289,7 @@ namespace PolarisBiosEditor
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_VRAM_ENTRY
+        struct ATOM_VRAM_ENTRY
         {
             public UInt32 ulChannelMapCfg;
             public UInt16 usModuleSize;
@@ -321,7 +321,7 @@ namespace PolarisBiosEditor
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        unsafe struct ATOM_VRAM_INFO
+        struct ATOM_VRAM_INFO
         {
             public ATOM_COMMON_TABLE_HEADER sHeader;
             public UInt16 usMemAdjustTblOffset;
@@ -379,10 +379,41 @@ namespace PolarisBiosEditor
             }
         }
 
+		private ListViewItem handler;
+
+		private void listView_ChangeSelection(object sender, EventArgs e)
+		{
+			ListView lb = sender as ListView;
+			String sel_name = lb.SelectedItems [0].Text;
+
+			for (var i = 0; i < lb.Items.Count; i++)
+			{
+
+				ListViewItem container = lb.Items[i];
+				var name = container.Text;
+				var value = container.SubItems[1].Text;
+
+				if (name == sel_name)
+				{
+					editSubItem1.Text = name;
+					editSubItem2.Text = value;
+					handler = container;
+				}
+
+			}
+		}
+
+    private void apply_Click(object sender, EventArgs e) {
+      if(handler != null) {
+        handler.Text = editSubItem1.Text;
+        handler.SubItems[1].Text = editSubItem2.Text;
+      }
+    }
+
         public PolarisBiosEditor()
         {
             InitializeComponent();
-            this.Text += " 1.4";
+            this.Text += " 1.4.1";
 
             save.Enabled = false;
             boxROM.Enabled = false;
@@ -392,6 +423,15 @@ namespace PolarisBiosEditor
             boxGPU.Enabled = false;
             boxMEM.Enabled = false;
             boxVRAM.Enabled = false;
+
+			tableVRAM.MouseClick += new MouseEventHandler(listView_ChangeSelection);
+			tableVRAM_TIMING.MouseClick += new MouseEventHandler(listView_ChangeSelection);
+			tableMEMORY.MouseClick += new MouseEventHandler(listView_ChangeSelection);
+			tableGPU.MouseClick += new MouseEventHandler(listView_ChangeSelection);
+			tableFAN.MouseClick += new MouseEventHandler(listView_ChangeSelection);
+			tablePOWERTUNE.MouseClick += new MouseEventHandler(listView_ChangeSelection);
+			tablePOWERPLAY.MouseClick += new MouseEventHandler(listView_ChangeSelection);
+			tableROM.MouseClick += new MouseEventHandler(listView_ChangeSelection);
 
             //MessageBox.Show("Modifying your BIOS is dangerous and could cause irreversible damage to your GPU.\nUsing a modified BIOS may void your warranty.\nThe author will not be held accountable for your actions.", "DISCLAIMER", MessageBoxButtons.OK, MessageBoxImage.Warning);
         }
