@@ -394,6 +394,7 @@ namespace PolarisBiosEditor
       this.editSubItem2.Name = "editSubItem2";
       this.editSubItem2.Size = new System.Drawing.Size(700, 20);
       this.editSubItem2.TabIndex = 2;
+      this.editSubItem2.Click += new System.EventHandler(this.editSubItem2_Click);
       //
       // apply
       //
