@@ -443,12 +443,14 @@ namespace PolarisBiosEditor
 		public PolarisBiosEditor ()
 		{
 			InitializeComponent ();
-			this.Text += " 1.5";
+			this.Text += " 1.6";
 
 			rc.Add ("MT51J256M3", "MICRON");
-			rc.Add ("EDW4032BABG", "ELPIDA");
-			rc.Add ("H5GC4H24AJR", "HYNIX");
+			rc.Add ("EDW4032BAB", "ELPIDA");
+			rc.Add ("H5GC4H24AJ", "HYNIX_1");
+            rc.Add ("H5GQ8H24MJ", "HYNIX_2");
 			rc.Add ("K4G80325FB", "SAMSUNG");
+
 
 			save.Enabled = false;
 			boxROM.Enabled = false;
@@ -741,8 +743,21 @@ namespace PolarisBiosEditor
 
 						listVRAM.Items.Clear ();
 						for (var i = 0; i < atom_vram_info.ucNumOfVRAMModule; i++) {
-							if (atom_vram_entries [i].strMemPNString [0] != 0)
-								listVRAM.Items.Add (Encoding.UTF8.GetString (atom_vram_entries [i].strMemPNString).Substring (0, 10));
+                            if (atom_vram_entries[i].strMemPNString[0] != 0)
+                            {
+                                
+                                var mem_id = Encoding.UTF8.GetString(atom_vram_entries[i].strMemPNString).Substring(0, 10);
+                                string mem_vendor;
+                                if (rc.ContainsKey(mem_id))
+                                {
+                                    mem_vendor = rc[mem_id];
+                                } else
+                                {
+                                    mem_vendor = "UNKNOWN";
+                                }
+
+                                listVRAM.Items.Add(mem_id + " (" + mem_vendor + ")");
+                            }
 						}
 						listVRAM.SelectedIndex = 0;
 						atom_vram_index = listVRAM.SelectedIndex;
@@ -1130,5 +1145,72 @@ namespace PolarisBiosEditor
 			}
 		}
 
-	}
+        private void listVRAM_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // find samsung mem
+            int samsung_index = -1;
+            for (var i = 0; i < atom_vram_info.ucNumOfVRAMModule; i++)
+            {
+                string mem_vendor;
+                if (atom_vram_entries[i].strMemPNString[0] != 0)
+                {
+                    var mem_id = Encoding.UTF8.GetString(atom_vram_entries[i].strMemPNString).Substring(0, 10);
+                    
+                    if (rc.ContainsKey(mem_id))
+                    {
+                        mem_vendor = rc[mem_id];
+                    }
+                    else
+                    {
+                        mem_vendor = "UNKNOWN";
+                    }
+                if (mem_vendor == "SAMSUNG")
+                    {
+                        samsung_index = i;
+                        break;
+                    }
+                }
+            }
+
+            if(samsung_index != -1)
+            {
+                //samsung found!
+                MessageBox.Show("Samsung Memory found at index #" + samsung_index + ", now applying UBERMIX timings to 2000+ strap(s)");
+
+                for (var i = 0; i < tableVRAM_TIMING.Items.Count; i++)
+                {
+                    ListViewItem container = tableVRAM_TIMING.Items[i];
+                    var name = container.Text;
+                    UInt32 real_mhz = 0;
+                    int mem_index = -1;
+
+                    if (name.IndexOf(':') > 0)
+                    {
+                        // get mem index
+                        mem_index = (Int32)int32.ConvertFromString(name.Substring(0,1));
+                    }
+                    else
+                    {
+                        mem_index = 32768;
+                    }
+
+                    real_mhz = (UInt32)uint32.ConvertFromString(name.Substring(name.IndexOf(':') + 1));
+
+                    if (real_mhz >= 2000 && (mem_index == samsung_index || mem_index == 32768))
+                    {
+                        // set the ubermix 3.1 timings
+                        container.SubItems[1].Text = timings[0];
+                    }
+                }
+            } else {
+                MessageBox.Show("Sorry, no Samsung memory found. If you think this is an error, please file a bugreport @ github.com/jaschaknack/PolarisBiosEditor");
+            }
+
+        }
+    }
 }
