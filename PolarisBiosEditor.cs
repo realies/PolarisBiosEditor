@@ -455,12 +455,13 @@ namespace PolarisBiosEditor
         public PolarisBiosEditor()
         {
             InitializeComponent();
-            this.Text += " 1.6";
+            this.Text += " 1.6.1";
 
             rc.Add("MT51J256M3", "MICRON");
             rc.Add("EDW4032BAB", "ELPIDA");
             rc.Add("H5GC4H24AJ", "HYNIX_1");
             rc.Add("H5GQ8H24MJ", "HYNIX_2");
+            rc.Add("H5GC8H24MJ", "HYNIX_2");
             rc.Add("K4G80325FB", "SAMSUNG");
 
 

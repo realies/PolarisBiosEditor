@@ -10,6 +10,9 @@ please build the executable yourself or decompile the existing one if you don't 
 
 rx5xx also supported
 
+### v1.6.1
+- hynix memory H5GC8H24MJ now recognized (same timings as H5GQ8H24MJ)
+
 ### v1.6
 - window resizes properly now
 - memory vendor detection
