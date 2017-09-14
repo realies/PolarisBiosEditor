@@ -1,4 +1,8 @@
-# PolarisBiosEditor v1.6
+# PolarisBiosEditor v1.6.1
+
+VirusTotal Report: https://www.virustotal.com/de/file/da96cd604093c686e8b1488726ae10a43a550aea5aaba0c0f308183b86f340f3/analysis/1505395469/
+
+0/58. If your AV warns you about a virus/trojan, consider it as false positive.
 
 Fork from lojkinKot
 
