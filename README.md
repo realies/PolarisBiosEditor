@@ -1,4 +1,4 @@
-# PolarisBiosEditor v1.6.1
+# PolarisBiosEditor v1.6.2
 
 VirusTotal Report: https://www.virustotal.com/de/file/da96cd604093c686e8b1488726ae10a43a550aea5aaba0c0f308183b86f340f3/analysis/1505395469/
 
@@ -13,6 +13,10 @@ one click timing feature should be used with care, it maybe not stable for you
 please build the executable yourself or decompile the existing one if you don't trust
 
 rx5xx also supported
+
+### v1.6.2
+- experimental: ubermix timings are now also applied to 4g SAMSUNG vram (K4G41325FC, K4G41325FE)
+- timing modification starts now at 1750 instead of 2000
 
 ### v1.6.1
 - hynix memory H5GC8H24MJ now recognized (same timings as H5GQ8H24MJ)

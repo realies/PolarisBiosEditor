@@ -27,22 +27,22 @@ namespace PolarisBiosEditor
 
 
         string[] timings = new string[] {
-			// UberMix 3.1
-			"777000000000000022CC1C00AD615C41C0590E152ECC8608006007000B031420FA8900A00300000010122F3FBA354019",
-			// UberMix 2.3 (less extreme)
-			"777000000000000022CC1C00AD615B41C0570E152DCB7409006007000B031420FA8900A00300000010123A46DB354019",
-			// 1750/2000MHz Mix Timings
-			"777000000000000022CC1C00106A6D4DD0571016B90D060C006AE70014051420FA8900A0030000001E123A46DB354019",
-			// 1625/2000MHz Mix Timings
-			"777000000000000022CC1C00CE616C47D0570F15B48C250B006AE7000B031420FA8900A0030000001E123A46DB354019",
-            // Good HYNIX_2
-            "777000000000000022AA1C00B56A6D46C0551017BE8E060C006AE6000C081420EA8900AB030000001B162C31C0313F17",
-            // Good Micron
-            "777000000000000022AA1C0073626C41B0551016BA0D260B006AE60004061420EA8940AA030000001914292EB22E3B16",
-            // Good Hynix_1
-            "999000000000000022559D0010DE5B4480551312B74C450A00400600750414206A8900A00200312010112D34A42A3816",
-            // Good Elpida
-            "777000000000000022AA1C00315A5436A0550F15B68C1506004082007C041420CA8980A9020004C01712262B612B3715"
+		// UberMix 3.1
+		"777000000000000022CC1C00AD615C41C0590E152ECC8608006007000B031420FA8900A00300000010122F3FBA354019",
+		// UberMix 2.3 (less extreme)
+		"777000000000000022CC1C00AD615B41C0570E152DCB7409006007000B031420FA8900A00300000010123A46DB354019",
+		// 1750/2000MHz Mix Timings
+		"777000000000000022CC1C00106A6D4DD0571016B90D060C006AE70014051420FA8900A0030000001E123A46DB354019",
+		// 1625/2000MHz Mix Timings
+		"777000000000000022CC1C00CE616C47D0570F15B48C250B006AE7000B031420FA8900A0030000001E123A46DB354019",
+		// Good HYNIX_2
+		"777000000000000022AA1C00B56A6D46C0551017BE8E060C006AE6000C081420EA8900AB030000001B162C31C0313F17",
+		// Good Micron
+		"777000000000000022AA1C0073626C41B0551016BA0D260B006AE60004061420EA8940AA030000001914292EB22E3B16",
+		// Good Hynix_1
+		"999000000000000022559D0010DE5B4480551312B74C450A00400600750414206A8900A00200312010112D34A42A3816",
+		// Good Elpida
+		"777000000000000022AA1C00315A5436A0550F15B68C1506004082007C041420CA8980A9020004C01712262B612B3715"
         };
 
         [StructLayout(LayoutKind.Explicit, Size = 96, CharSet = CharSet.Ansi)]
@@ -455,7 +455,7 @@ namespace PolarisBiosEditor
         public PolarisBiosEditor()
         {
             InitializeComponent();
-            this.Text += " 1.6.1";
+            this.Text += " 1.6.2";
 
             rc.Add("MT51J256M3", "MICRON");
             rc.Add("EDW4032BAB", "ELPIDA");
@@ -463,6 +463,8 @@ namespace PolarisBiosEditor
             rc.Add("H5GQ8H24MJ", "HYNIX_2");
             rc.Add("H5GC8H24MJ", "HYNIX_2");
             rc.Add("K4G80325FB", "SAMSUNG");
+            rc.Add("K4G41325FE", "SAMSUNG");
+            rc.Add("K4G41325FC", "SAMSUNG");
 
 
             save.Enabled = false;
@@ -1290,9 +1292,9 @@ namespace PolarisBiosEditor
 
                 real_mhz = (UInt32)uint32.ConvertFromString(name.Substring(name.IndexOf(':') + 1));
 
-                if (real_mhz >= 2000 && (mem_index == vendor_index || mem_index == 32768))
+                if (real_mhz >= 1750 && (mem_index == vendor_index || mem_index == 32768))
                 {
-                    // set the ubermix 3.1 timings
+                    // set the timings
                     container.SubItems[1].Text = timings[timing_index];
                 }
             }
@@ -1300,7 +1302,6 @@ namespace PolarisBiosEditor
 
         private void button1_Click(object sender, EventArgs e)
         {
-            // find samsung mem
             int samsung_index = -1;
             int micron_index = -1;
             int elpida_index = -1;
@@ -1347,20 +1348,20 @@ namespace PolarisBiosEditor
 
             if (samsung_index != -1)
             {
-                MessageBox.Show("Samsung Memory found at index #" + samsung_index + ", now applying UBERMIX 3.1 timings to 2000+ strap(s)");
+                MessageBox.Show("Samsung Memory found at index #" + samsung_index + ", now applying UBERMIX 3.1 timings to 1750+ strap(s)");
                 apply_timings(samsung_index, 0);
             }
 
             if (hynix_2_index != -1)
             {
-                MessageBox.Show("Hynix (2) Memory found at index #" + hynix_2_index + ", now applying GOOD HYNIX MINING timings to 2000+ strap(s)");
+                MessageBox.Show("Hynix (2) Memory found at index #" + hynix_2_index + ", now applying GOOD HYNIX MINING timings to 1750+ strap(s)");
                 apply_timings(hynix_2_index, 4);
 
             }
 
             if (micron_index != -1)
             {
-                MessageBox.Show("Micron Memory found at index #" + micron_index + ", now applying GOOD MICRON MINING timings to 2000+ strap(s)");
+                MessageBox.Show("Micron Memory found at index #" + micron_index + ", now applying GOOD MICRON MINING timings to 1750+ strap(s)");
 
                 apply_timings(micron_index, 5);
 
@@ -1368,7 +1369,7 @@ namespace PolarisBiosEditor
 
             if (hynix_1_index != -1)
             {
-                MessageBox.Show("Hynix (1) Memory found at index #" + hynix_1_index + ", now applying GOOD HYNIX MINING timings to 2000+ strap(s)");
+                MessageBox.Show("Hynix (1) Memory found at index #" + hynix_1_index + ", now applying GOOD HYNIX MINING timings to 1750+ strap(s)");
 
                 apply_timings(hynix_1_index, 6);
 
@@ -1376,7 +1377,7 @@ namespace PolarisBiosEditor
 
             if (elpida_index != -1)
             {
-                MessageBox.Show("Elpida Memory found at index #" + elpida_index + ", now applying GOOD ELPIDA MINING timings to 2000+ strap(s)");
+                MessageBox.Show("Elpida Memory found at index #" + elpida_index + ", now applying GOOD ELPIDA MINING timings to 1750+ strap(s)");
 
                 apply_timings(elpida_index, 7);
 
