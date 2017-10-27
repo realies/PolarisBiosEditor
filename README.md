@@ -1,4 +1,14 @@
-# PolarisBiosEditor v1.6.2
+# PolarisBiosEditor v1.6.3
+
+I accept donations:
+
+BTC: 38kBLXm5Pw25rbfYh94cUmS6ZJcdTAioxA
+LTC: LU63wHP66LCXDB3ky9yFvSApMnBoovqtGe
+DASH: XhQLBbwZkKqFG1GdkuqnyrfktRDdxFkJVt
+ETH / ETC: 0xCdf1C1258A7bA88878fa6582397C578d8a281C96
+ZEC: t1RqrF5xvQMFkkMeGxzmTCp5wAZKcSFPbZJ
+XMR: 4GdoN7NCTi8a5gZug7PrwZNKjvHFmKeV11L6pNJPgj5QNEHsN6eeX3DaAQFwZ1ufD4LYCZKArktt113W7QjWvQ7CWFV4WYTT4jRLHwoqcS
+BCH: 1KA6t9YoLtfG9ji1K3WJQsPdydBue2aGcP
 
 VirusTotal Report: https://www.virustotal.com/de/file/da96cd604093c686e8b1488726ae10a43a550aea5aaba0c0f308183b86f340f3/analysis/1505395469/
 
@@ -13,6 +23,10 @@ one click timing feature should be used with care, it maybe not stable for you
 please build the executable yourself or decompile the existing one if you don't trust
 
 rx5xx also supported
+
+### v1.6.3
+- timing modification starts now at 1500 instead of 1750
+- device id 67FF now also supported
 
 ### v1.6.2
 - experimental: ubermix timings are now also applied to 4g SAMSUNG vram (K4G41325FC, K4G41325FE)

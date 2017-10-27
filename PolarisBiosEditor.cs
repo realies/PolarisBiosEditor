@@ -56,7 +56,7 @@ namespace PolarisBiosEditor
         Byte[] buffer;
         Int32Converter int32 = new Int32Converter();
         UInt32Converter uint32 = new UInt32Converter();
-        string[] supportedDeviceID = new string[] { "67DF", "1002" };
+        string[] supportedDeviceID = new string[] { "67DF", "1002", "67FF" };
         string deviceID = "";
 
         int atom_rom_checksum_offset = 0x21;
@@ -455,7 +455,7 @@ namespace PolarisBiosEditor
         public PolarisBiosEditor()
         {
             InitializeComponent();
-            this.Text += " 1.6.2";
+            this.Text += " 1.6.3";
 
             rc.Add("MT51J256M3", "MICRON");
             rc.Add("EDW4032BAB", "ELPIDA");
@@ -1292,7 +1292,7 @@ namespace PolarisBiosEditor
 
                 real_mhz = (UInt32)uint32.ConvertFromString(name.Substring(name.IndexOf(':') + 1));
 
-                if (real_mhz >= 1750 && (mem_index == vendor_index || mem_index == 32768))
+                if (real_mhz >= 1500 && (mem_index == vendor_index || mem_index == 32768))
                 {
                     // set the timings
                     container.SubItems[1].Text = timings[timing_index];
@@ -1348,20 +1348,20 @@ namespace PolarisBiosEditor
 
             if (samsung_index != -1)
             {
-                MessageBox.Show("Samsung Memory found at index #" + samsung_index + ", now applying UBERMIX 3.1 timings to 1750+ strap(s)");
+                MessageBox.Show("Samsung Memory found at index #" + samsung_index + ", now applying UBERMIX 3.1 timings to 1500+ strap(s)");
                 apply_timings(samsung_index, 0);
             }
 
             if (hynix_2_index != -1)
             {
-                MessageBox.Show("Hynix (2) Memory found at index #" + hynix_2_index + ", now applying GOOD HYNIX MINING timings to 1750+ strap(s)");
+                MessageBox.Show("Hynix (2) Memory found at index #" + hynix_2_index + ", now applying GOOD HYNIX MINING timings to 1500+ strap(s)");
                 apply_timings(hynix_2_index, 4);
 
             }
 
             if (micron_index != -1)
             {
-                MessageBox.Show("Micron Memory found at index #" + micron_index + ", now applying GOOD MICRON MINING timings to 1750+ strap(s)");
+                MessageBox.Show("Micron Memory found at index #" + micron_index + ", now applying GOOD MICRON MINING timings to 1500+ strap(s)");
 
                 apply_timings(micron_index, 5);
 
@@ -1369,7 +1369,7 @@ namespace PolarisBiosEditor
 
             if (hynix_1_index != -1)
             {
-                MessageBox.Show("Hynix (1) Memory found at index #" + hynix_1_index + ", now applying GOOD HYNIX MINING timings to 1750+ strap(s)");
+                MessageBox.Show("Hynix (1) Memory found at index #" + hynix_1_index + ", now applying GOOD HYNIX MINING timings to 1500+ strap(s)");
 
                 apply_timings(hynix_1_index, 6);
 
@@ -1377,7 +1377,7 @@ namespace PolarisBiosEditor
 
             if (elpida_index != -1)
             {
-                MessageBox.Show("Elpida Memory found at index #" + elpida_index + ", now applying GOOD ELPIDA MINING timings to 1750+ strap(s)");
+                MessageBox.Show("Elpida Memory found at index #" + elpida_index + ", now applying GOOD ELPIDA MINING timings to 1500+ strap(s)");
 
                 apply_timings(elpida_index, 7);
 
