@@ -27,6 +27,8 @@ namespace PolarisBiosEditor
 
 
         string[] timings = new string[] {
+		// FIXME Try UberMix 3.2 Timings:
+		// 777000000000000022CC1C00CEE55C46C0590E1532CD66090060070014051420FA8900A00300000012123442C3353C19
 		// UberMix 3.1
 		"777000000000000022CC1C00AD615C41C0590E152ECC8608006007000B031420FA8900A00300000010122F3FBA354019",
 		// UberMix 2.3 (less extreme)
@@ -41,8 +43,8 @@ namespace PolarisBiosEditor
 		"777000000000000022AA1C0073626C41B0551016BA0D260B006AE60004061420EA8940AA030000001914292EB22E3B16",
 		// Good Hynix_1
 		"999000000000000022559D0010DE5B4480551312B74C450A00400600750414206A8900A00200312010112D34A42A3816",
-		// Good Elpida
-		"777000000000000022AA1C00315A5436A0550F15B68C1506004082007C041420CA8980A9020004C01712262B612B3715"
+		// Good Elpida (fixed with version 1.6.4, see issue #19)
+		"777000000000000022AA1C00315A5B36A0550F15B68C1506004082007C041420CA8980A9020004C01712262B612B3715"
         };
 
         [StructLayout(LayoutKind.Explicit, Size = 96, CharSet = CharSet.Ansi)]
@@ -455,7 +457,7 @@ namespace PolarisBiosEditor
         public PolarisBiosEditor()
         {
             InitializeComponent();
-            this.Text += " 1.6.3";
+            this.Text += " 1.6.4";
 
             rc.Add("MT51J256M3", "MICRON");
             rc.Add("EDW4032BAB", "ELPIDA");
@@ -465,6 +467,8 @@ namespace PolarisBiosEditor
             rc.Add("K4G80325FB", "SAMSUNG");
             rc.Add("K4G41325FE", "SAMSUNG");
             rc.Add("K4G41325FC", "SAMSUNG");
+			rc.Add("K4G41325FS", "SAMSUNG");
+
 
 
             save.Enabled = false;

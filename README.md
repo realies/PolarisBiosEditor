@@ -1,4 +1,4 @@
-# PolarisBiosEditor v1.6.3
+# PolarisBiosEditor v1.6.4
 
 I accept donations:
 
@@ -36,6 +36,10 @@ one click timing feature should be used with care, it maybe not stable for you
 please build the executable yourself or decompile the existing one if you don't trust
 
 rx5xx also supported
+
+### v1.6.4
+- elpida timings fixed
+- K4G41325FS memory support
 
 ### v1.6.3
 - timing modification starts now at 1500 instead of 1750
