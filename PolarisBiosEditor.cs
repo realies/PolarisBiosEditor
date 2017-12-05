@@ -505,7 +505,7 @@ namespace PolarisBiosEditor
                 if (editSubItem2.Text.Length == 96)
                 {
                     byte[] decode = StringToByteArray(editSubItem2.Text);
-                    MessageBox.Show("Decoe");
+                    //MessageBox.Show("Decoe");
                 }
 
 
